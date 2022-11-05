@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neutron.youchat_backend.mapper.UserMapper">
+
+    <!--public User queryUserByUsername(String username);-->
+    <select id="queryUserByUsername" resultType="com.neutron.youchat_backend.entity.User">
+        select *
+        from youchat.user
+        where username = #{username};
+    </select>
+
+    <!--public Integer addUser(@Param("username") String username, @Param("password") String password);-->
+    <insert id="addUser">
+        insert into youchat.user(username, password, enabled, accountNonExpired, accountNonLocked, credentialsNonExpired)
+        values (#{username}, #{password}, 1, 1, 1, 1);
+    </insert>
+
+    <!--List<Role> getRolesByUserId(@Param("user_id") Integer user_id);-->
+    <select id="getRolesByUserId" resultMap="RoleResultMap">
+        SELECT role.*, permission.id as pid, permission.name as pname, permission.nameZh as pnameZh
+        FROM youchat.role role
+                 LEFT JOIN youchat.user_role ur
+                           ON role.id = ur.role_id AND ur.user_id = #{user_id}
+                 LEFT JOIN youchat.role_permission rp
+                           ON role.id = rp.role_id
+                 LEFT JOIN youchat.permission permission
+                           ON permission.id = rp.permission_id;
+    </select>
+
+    <resultMap id="RoleResultMap" type="com.neutron.youchat_backend.entity.Role">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="nameZh" column="nameZh"/>
+        <collection property="permissions" ofType="com.neutron.youchat_backend.entity.Permission">
+            <id property="id" column="pid"/>
+            <result property="name" column="pname"/>
+            <result property="nameZh" column="pnameZh"/>
+        </collection>
+    </resultMap>
+
+    <!--List<Permission> getAllPermissions();-->
+    <select id="getAllResources" resultMap="ResourcesResultMap">
+        SELECT resources.*, p.id as pid, p.name as pname, p.nameZh as pnameZh
+        FROM youchat.resources resources
+                 LEFT JOIN youchat.`permission-resources` pr
+                           ON resources.id = pr.resources_id
+                 LEFT JOIN youchat.permission p
+                           ON pr.permission_id = p.id
+    </select>
+
+    <resultMap id="ResourcesResultMap" type="com.neutron.youchat_backend.entity.Resources">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="url" column="url"/>
+        <collection property="permissions" ofType="com.neutron.youchat_backend.entity.Permission">
+            <id property="id" column="pid"/>
+            <result property="name" column="pname"/>
+            <result property="nameZh" column="pnameZh"/>
+        </collection>
+    </resultMap>
+</mapper>
