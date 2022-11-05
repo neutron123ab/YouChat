@@ -1,14 +1,15 @@
 package com.neutron.youchat_backend.filter;
 
-import com.neutron.login_backend.components.CustomSecurityMetadataSource;
-import com.neutron.login_backend.entity.User;
-import com.neutron.login_backend.service.JwtTokenService;
+import com.neutron.youchat_backend.components.CustomSecurityMetadataSource;
+import com.neutron.youchat_backend.entity.User;
 import com.neutron.youchat_backend.service.JwtTokenService;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.RSAKey;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
