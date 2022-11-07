@@ -24,6 +24,9 @@ import java.text.ParseException;
 @Component
 public class LoginFilter extends OncePerRequestFilter {
 
+    //保存用户登录信息认证后的用户id
+    public static Integer id;
+
     @Autowired
     private JwtTokenService jwtTokenService;
 
@@ -39,7 +42,9 @@ public class LoginFilter extends OncePerRequestFilter {
 
         String authorization = request.getHeader("Authorization");
 
-        if(request.getRequestURI().equals("/login") || request.getRequestURI().equals("/getPublicKey")){
+        if(request.getRequestURI().equals("/login") ||
+                request.getRequestURI().equals("/getPublicKey") ||
+                request.getRequestURI().equals("/login/signup")){
             filterChain.doFilter(request, response);
         } else if(authorization == null){
             throw new RuntimeException("用户未登录");
@@ -68,7 +73,7 @@ public class LoginFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(userInfo, null, userInfo.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(token);
                     System.out.println("SecurityContextHolder信息：" + SecurityContextHolder.getContext());
-
+                    id = userInfo.getId();
                 }
                 System.out.println("attributes: "+customSecurityMetadataSource.getAllConfigAttributes());
                 filterChain.doFilter(request, response);

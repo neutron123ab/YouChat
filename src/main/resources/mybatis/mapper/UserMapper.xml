@@ -60,4 +60,11 @@
             <result property="nameZh" column="pnameZh"/>
         </collection>
     </resultMap>
+
+    <!--public User queryUserById(Integer id);-->
+    <select id="queryUserById" resultType="com.neutron.youchat_backend.entity.User">
+        select *
+        from youchat.user
+        where id = #{id};
+    </select>
 </mapper>

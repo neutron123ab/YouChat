@@ -19,16 +19,19 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
+    /**
+     * 根据用户名查询该用户是否存在
+     * @param username
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userMapper.queryUserByUsername(username);
         if(user == null){
             throw new RuntimeException("用户不存在");
         }
-        ArrayList<Role> roles = new ArrayList<>();
-        Role role = new Role(1, "manager", "系统管理员");
-        roles.add(role);
-        user.setRoles(roles);
+        user.setRoles(userMapper.getRolesByUserId(user.getId()));
 
         return user;
     }

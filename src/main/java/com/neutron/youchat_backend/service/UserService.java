@@ -9,8 +9,8 @@ public interface UserService extends UserDetailsService {
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
     //注册添加用户
-    public Integer addUser(String username, String password);
+    Integer addUser(String username, String password);
 
     //对前端传过来的密码进行RSA解密
-    public String decodePassword(String password);
+    String decodePassword(String password);
 }

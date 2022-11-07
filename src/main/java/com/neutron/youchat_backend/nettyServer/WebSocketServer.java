@@ -28,9 +28,6 @@ public class WebSocketServer {
     @Resource
     private WebSocketServerHandler webSocketServerHandler;
 
-    @Autowired
-    private SecureWebSocketServerInitializer secureWebSocketServerInitializer;
-
     public void run(int port) throws InterruptedException {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();

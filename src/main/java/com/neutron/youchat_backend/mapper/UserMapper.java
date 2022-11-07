@@ -12,12 +12,15 @@ import java.util.List;
 public interface UserMapper {
 
     //根据用户名查找数据库中的用户
-    public User queryUserByUsername(String username);
+    User queryUserByUsername(String username);
 
     //注册添加用户
-    public Integer addUser(@Param("username") String username, @Param("password") String password);
+    Integer addUser(@Param("username") String username, @Param("password") String password);
 
     List<Role> getRolesByUserId(@Param("user_id") Integer user_id);
 
     List<Resources> getAllResources();
+
+    //根据用户id查找用户信息
+    User queryUserById(Integer id);
 }

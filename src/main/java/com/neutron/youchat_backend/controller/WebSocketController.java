@@ -6,14 +6,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 //开启websocket服务器
-@Component
-public class WebSocketController implements CommandLineRunner {
-
-    @Autowired
-    private WebSocketServer webSocketServer;
-
-    @Override
-    public void run(String... args) throws Exception {
-        webSocketServer.run(8088);
-    }
-}
+//@Component
+//public class WebSocketController implements CommandLineRunner {
+//
+//    @Autowired
+//    private WebSocketServer webSocketServer;
+//
+//    @Override
+//    public void run(String... args) throws Exception {
+//        webSocketServer.run(8088);
+//    }
+//}
