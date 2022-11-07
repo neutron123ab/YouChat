@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neutron.youchat_backend.mapper.GroupMapper">
+
+    <!--Integer createGroup(Group group);-->
+    <insert id="createGroup">
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO youchat.`group`(user_id, group_name, create_time, container, num)
+        VALUES(#{groupOwnerId}, #{groupName}, now(), #{container}, 1)
+    </insert>
+
+    <!--Integer addUserGroup(Group group);-->
+    <insert id="addUserGroup">
+        INSERT INTO youchat.user_group(user_id, group_id)
+        VALUES (#{groupOwnerId}, #{id})
+    </insert>
+
+    <!--Integer addUserInGroup(@Param("groupId") Integer groupId, @Param("userId") Integer userId);-->
+    <insert id="addUserInGroup">
+        INSERT INTO youchat.user_group(user_id, group_id)
+        VALUES (#{userId}, #{groupId})
+    </insert>
+
+    <!--Integer updateGroupNum(@Param("groupId") Integer groupId, @Param("changeNum") Integer changeNum);-->
+    <update id="updateGroupNum">
+        UPDATE youchat.`group`
+        SET num = num + #{changeNum}
+        WHERE id = #{groupId}
+    </update>
+
+    <!--Integer deleteUserInGroup(List<Integer> userIdList, @Param("groupId") Integer groupId);-->
+    <delete id="deleteUserInGroup">
+        DELETE
+        FROM youchat.user_group
+        WHERE
+        <foreach collection="userGroupList" item="item" separator=" OR ">
+            user_id = #{item.userId} AND group_id = #{item.groupId}
+        </foreach>
+    </delete>
+
+    <!--Group queryGroupByGroupId(Integer groupId);-->
+    <select id="queryGroupByGroupId" resultType="com.neutron.youchat_backend.entity.Group">
+        SELECT id, user_id AS 'groupOwnerId', group_name, container, num, create_time
+        FROM youchat.`group`
+        WHERE id = #{groupId}
+    </select>
+
+    <!--List<Group> queryAllGroupsUserJoined(Integer userId);-->
+    <select id="queryAllGroupsUserJoined" resultType="com.neutron.youchat_backend.entity.Group">
+        SELECT g.id, g.user_id AS 'groupOwnerId', g.group_name, g.container, g.num, g.create_time
+        FROM youchat.`group` g
+                 LEFT JOIN youchat.user_group ug
+                           ON ug.user_id = #{userId} AND ug.group_id = g.id
+    </select>
+</mapper>
