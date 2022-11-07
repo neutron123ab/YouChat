@@ -11,16 +11,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslHandler;
-import io.netty.handler.ssl.util.SelfSignedCertificate;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.HttpRequestHandler;
 
 import javax.annotation.Resource;
-import javax.net.ssl.SSLEngine;
 
 @Component
 public class WebSocketServer {
@@ -38,7 +32,6 @@ public class WebSocketServer {
             serverBootstrap
                     .group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    //.childHandler(secureWebSocketServerInitializer);
                     .childHandler(new ChannelInitializer<SocketChannel>() {
 
                         @Override
