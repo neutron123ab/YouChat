@@ -19,4 +19,11 @@
         WHERE user_id = #{userId}
             OR user_id = #{friendsId}
     </delete>
+
+    <!--List<Friends> queryFriendsByUserId(Integer userId);-->
+    <select id="queryFriendsByUserId" resultType="com.neutron.youchat_backend.entity.Friends">
+        SELECT *
+        FROM youchat.user_friends
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

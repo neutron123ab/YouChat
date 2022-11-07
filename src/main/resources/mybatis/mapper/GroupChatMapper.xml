@@ -4,4 +4,39 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.neutron.youchat_backend.mapper.GroupChatMapper">
 
+    <!--Integer addMsgUserSendInGroup(GroupChat groupChat);-->
+    <insert id="addMsgUserSendInGroup">
+        INSERT INTO youchat.group_chat(user_group_id, send_time, content)
+        VALUES (#{userGroupId}, NOW(), #{content})
+    </insert>
+
+    <!--Integer queryUserGroupId(UserGroupRelation userGroupRelation);-->
+    <select id="queryUserGroupId" resultType="java.lang.Integer">
+        SELECT id
+        FROM youchat.user_group
+        WHERE user_id = #{userId}
+          AND group_id = #{groupId}
+    </select>
+
+    <!--List<GroupChat> queryGroupMsg(Integer userGroupId);-->
+    <select id="queryGroupMsg" resultType="com.neutron.youchat_backend.entity.GroupChat">
+        SELECT gc.id, gc.user_group_id, gc.send_time, gc.content, ug.user_id, ug.group_id
+        FROM youchat.group_chat gc
+                 LEFT JOIN youchat.user_group ug
+                           ON gc.user_group_id = ug.id
+        UNION
+        SELECT gc2.id, gc2.user_group_id, gc2.send_time, gc2.content, ug3.user_id, ug3.group_id
+        FROM youchat.group_chat gc1
+                 RIGHT JOIN youchat.user_group ug1
+                            ON gc1.user_group_id = ug1.id
+                 RIGHT JOIN youchat.user_group ug2
+                            ON ug1.group_id = ug2.group_id
+                 RIGHT JOIN youchat.user u
+                            ON ug2.user_id = u.id
+                 RIGHT JOIN youchat.user_group ug3
+                            ON ug3.group_id = ug1.group_id AND ug3.user_id = u.id
+                 RIGHT JOIN youchat.group_chat gc2
+                            ON gc2.user_group_id = ug3.id
+        ORDER BY send_time
+    </select>
 </mapper>

@@ -25,6 +25,9 @@ public interface GroupMapper {
     //根据群id查询出该群信息
     Group queryGroupByGroupId(Integer groupId);
 
+    //查找用户加的所有群组
+    List<Group> queryAllGroupsUserJoined(Integer userId);
+
     //更新群组表中的用户数量
     Integer updateGroupNum(@Param("groupId") Integer groupId, @Param("changeNum") Integer changeNum);
 }

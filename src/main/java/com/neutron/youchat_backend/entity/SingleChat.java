@@ -14,15 +14,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class SingleChat {
 
+    private Integer id;
+
+    //用户好友表id
+    private Integer userFriendsId;
+
     //用户id
     private Integer userId;
-    //用户名
-    private String username;
 
     //好友id
     private Integer friendsId;
-    //好友名
-    private String friendsName;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
