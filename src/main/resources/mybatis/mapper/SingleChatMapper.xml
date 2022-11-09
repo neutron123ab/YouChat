@@ -32,7 +32,7 @@
     <select id="queryUserFriendsId" resultType="java.lang.Integer">
         SELECT id
         FROM youchat.user_friends
-        WHERE user_id = #{userId}
-          AND friends_id = #{friendsId}
+        WHERE user_id = #{userId} AND friends_id = #{friendsId}
+           OR user_id = #{friendsId} AND friends_id = #{userId}
     </select>
 </mapper>

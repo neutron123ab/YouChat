@@ -23,7 +23,7 @@
         SELECT gc.id, gc.user_group_id, gc.send_time, gc.content, ug.user_id, ug.group_id
         FROM youchat.group_chat gc
                  LEFT JOIN youchat.user_group ug
-                           ON gc.user_group_id = ug.id
+                           ON gc.user_group_id = #{userGroupId} AND ug.id = #{userGroupId}
         UNION
         SELECT gc2.id, gc2.user_group_id, gc2.send_time, gc2.content, ug3.user_id, ug3.group_id
         FROM youchat.group_chat gc1

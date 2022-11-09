@@ -1,5 +1,6 @@
 package com.neutron.youchat_backend.controller;
 
+import com.neutron.youchat_backend.common.GroupManageUtil;
 import com.neutron.youchat_backend.common.Result;
 import com.neutron.youchat_backend.entity.Group;
 import com.neutron.youchat_backend.entity.UserGroupRelation;
@@ -27,6 +28,9 @@ public class GroupController {
         if (groupService.createGroup(group) > 0) {
             //在创建好群聊后，会自动为group对象设置一个id
             groupService.addUserGroup(group);
+            String id = "g-"+group.getId();
+            //添加channelGroup
+            GroupManageUtil.addChannelGroup(id);
             return Result.success();
         }
         return Result.error();
