@@ -1,13 +1,13 @@
 package com.neutron.youchat_backend.nettyServer;
 
 import com.neutron.youchat_backend.common.GroupManageUtil;
-import com.neutron.youchat_backend.entity.Friends;
-import com.neutron.youchat_backend.entity.Group;
-import com.neutron.youchat_backend.entity.User;
+import com.neutron.youchat_backend.entity.*;
 import com.neutron.youchat_backend.filter.LoginFilter;
 import com.neutron.youchat_backend.mapper.UserMapper;
 import com.neutron.youchat_backend.service.FriendsService;
+import com.neutron.youchat_backend.service.GroupChatService;
 import com.neutron.youchat_backend.service.GroupService;
+import com.neutron.youchat_backend.service.SingleChatService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,6 +34,12 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
     @Autowired
     private GroupService groupService;
 
+    @Autowired
+    private SingleChatService singleChatService;
+
+    @Autowired
+    private GroupChatService groupChatService;
+
     //private static final ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     @Override
@@ -43,7 +49,8 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
         //前端传递消息格式：id-message，id为channelGroup编号
         String[] msgArray = message.split("-");
 
-        String id = msgArray[0];//组号
+        String id = msgArray[0];//组号，格式为：s(g)id
+        String chatId = id.substring(1);//好友表或用户-群聊关联表中的id
         String s = msgArray[1];//具体消息
 
         //获取用户当前群聊对应的channelGroup
@@ -63,7 +70,19 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
             } else {
                 //自己发送消息
                 ch.writeAndFlush(new TextWebSocketFrame(userId + "-" + username + "-" + s));
-
+                //私聊
+                if(id.charAt(0) == 's'){
+                    SingleChat singleChat = new SingleChat();
+                    singleChat.setUserFriendsId(Integer.parseInt(chatId));
+                    singleChat.setContent(s);
+                    singleChatService.addMsgUserSend(singleChat);
+                } else if(id.charAt(0) == 'g'){
+                    //群聊
+                    GroupChat groupChat = new GroupChat();
+                    groupChat.setUserGroupId(Integer.parseInt(chatId));
+                    groupChat.setContent(s);
+                    groupChatService.addMsgUserSendInGroup(groupChat);
+                }
             }
         });
         System.out.println("[user: " + username + "] 发送消息：" + s);
