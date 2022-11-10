@@ -18,4 +18,6 @@ public interface SingleChatMapper {
     //根据用户好友表id获得用户聊天记录（按时间升序排序）
     List<SingleChat> querySingleMsg(Integer userFriendsId);
 
+
+
 }

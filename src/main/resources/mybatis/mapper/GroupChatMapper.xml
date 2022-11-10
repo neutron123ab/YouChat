@@ -20,23 +20,48 @@
 
     <!--List<GroupChat> queryGroupMsg(Integer userGroupId);-->
     <select id="queryGroupMsg" resultType="com.neutron.youchat_backend.entity.GroupChat">
-        SELECT gc.id, gc.user_group_id, gc.send_time, gc.content, ug.user_id, ug.group_id
-        FROM youchat.group_chat gc
-                 LEFT JOIN youchat.user_group ug
-                           ON gc.user_group_id = #{userGroupId} AND ug.id = #{userGroupId}
+        SELECT gc.id,
+               gc.user_group_id,
+               gc.send_time,
+               gc.content,
+               ug.user_id,
+               u.username,
+               ug.group_id,
+               g.group_name
+        FROM youchat.group_chat gc,
+             youchat.user_group ug,
+             youchat.user u,
+             youchat.group g
+        WHERE gc.user_group_id = 1
+          AND ug.id = 1
+          AND ug.user_id = u.id
+          AND ug.group_id = g.id
         UNION
-        SELECT gc2.id, gc2.user_group_id, gc2.send_time, gc2.content, ug3.user_id, ug3.group_id
-        FROM youchat.group_chat gc1
-                 RIGHT JOIN youchat.user_group ug1
-                            ON gc1.user_group_id = ug1.id
-                 RIGHT JOIN youchat.user_group ug2
-                            ON ug1.group_id = ug2.group_id
-                 RIGHT JOIN youchat.user u
-                            ON ug2.user_id = u.id
-                 RIGHT JOIN youchat.user_group ug3
-                            ON ug3.group_id = ug1.group_id AND ug3.user_id = u.id
-                 RIGHT JOIN youchat.group_chat gc2
-                            ON gc2.user_group_id = ug3.id
+        SELECT gc2.id,
+               gc2.user_group_id,
+               gc2.send_time,
+               gc2.content,
+               ug3.user_id,
+               u1.username,
+               ug3.group_id,
+               g1.group_name
+        FROM youchat.group_chat gc1,
+             youchat.user_group ug1,
+             youchat.user_group ug2,
+             youchat.user u,
+             youchat.user_group ug3,
+             youchat.group_chat gc2,
+             youchat.user u1,
+             youchat.group g1
+        WHERE gc1.user_group_id = 1
+          AND ug1.id = 1
+          AND ug1.group_id = ug2.group_id
+          AND ug2.user_id = u.id
+          AND ug3.group_id = ug1.group_id
+          AND ug3.user_id = u.id
+          AND gc2.user_group_id = ug3.id
+          AND ug3.user_id = u1.id
+          AND ug3.group_id = g1.id
         ORDER BY send_time
     </select>
 </mapper>

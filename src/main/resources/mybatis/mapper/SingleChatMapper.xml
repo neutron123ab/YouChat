@@ -6,25 +6,49 @@
 
     <!--Integer addMsgUserSend(SingleChat singleChat);-->
     <insert id="addMsgUserSend">
-        INSERT INTO youchat.single_chat(user_friends_id, send_time, content)
-        VALUES (#{userFriendsId}, NOW(), #{content})
+        INSERT INTO youchat.single_chat(user_friends_id, send_time, content, senderId)
+        VALUES (#{userFriendsId}, NOW(), #{content}, #{userId})
     </insert>
 
-    <!--List<SingleChat> querySingleMsg(Integer userId);-->
+    <!--List<SingleChat> querySingleMsg(Integer userFriendsId);-->
     <select id="querySingleMsg" resultType="com.neutron.youchat_backend.entity.SingleChat">
-        SELECT s.id, s.user_friends_id, s.send_time, s.content, u.user_id, u.friends_id
-        FROM youchat.single_chat s
-                 LEFT JOIN youchat.user_friends u
-                           ON s.user_friends_id = #{userFriendsId} AND u.id = #{userFriendsId}
+        SELECT s.id,
+               s.user_friends_id,
+               s.send_time,
+               s.content,
+               s.senderId,
+               uf.user_id,
+               u.username,
+               uf.friends_id,
+               u1.username as friendsName
+        FROM youchat.single_chat s,
+             youchat.user_friends uf,
+             youchat.user u,
+             youchat.user u1
+        WHERE s.user_friends_id = #{userFriendsId}
+          AND uf.id = #{userFriendsId}
+          AND s.senderId = uf.user_id
+          AND uf.user_id = u.id
+          AND uf.friends_id = u1.id
         UNION
-        SELECT sc1.id, sc1.user_friends_id, sc1.send_time, sc1.content, uf1.user_id, uf1.friends_id
-        FROM youchat.single_chat sc
-                 RIGHT JOIN youchat.user_friends uf
-                            ON sc.user_friends_id = uf.id
-                 RIGHT JOIN youchat.user_friends uf1
-                            ON uf1.user_id = uf.friends_id AND uf1.friends_id = uf.user_id
-                 RIGHT JOIN youchat.single_chat sc1
-                            ON sc1.user_friends_id = uf1.id
+        SELECT s.id,
+               s.user_friends_id,
+               s.send_time,
+               s.content,
+               s.senderId,
+               uf.friends_id as userId,
+               u3.username,
+               uf.user_id    as friendsId,
+               u2.username   as friendsName
+        FROM youchat.single_chat s,
+             youchat.user_friends uf,
+             youchat.user u2,
+             youchat.user u3
+        WHERE s.user_friends_id = #{userFriendsId}
+          AND uf.id = #{userFriendsId}
+          AND s.senderId = uf.friends_id
+          AND uf.user_id = u2.id
+          AND uf.friends_id = u3.id
         ORDER BY send_time
     </select>
 

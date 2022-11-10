@@ -21,9 +21,13 @@ public class SingleChat {
 
     //用户id
     private Integer userId;
+    //用户名
+    private String username;
 
     //好友id
     private Integer friendsId;
+    //好友名
+    private String friendsName;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -32,5 +36,8 @@ public class SingleChat {
 
     //消息内容
     private String content;
+
+    //发送方的id
+    private Integer senderId;
 
 }

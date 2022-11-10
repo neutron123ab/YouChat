@@ -57,6 +57,7 @@ public class SingleChatController {
     @GetMapping("/getChatMsg")
     public Result<List<SingleChat>> getChatMsg(Integer userFriendsId){
         List<SingleChat> singleChatList = singleChatService.querySingleMsg(userFriendsId);
+        System.out.println("userFriendsId: "+userFriendsId);
         if(singleChatList!=null){
             return Result.success(singleChatList);
         }
