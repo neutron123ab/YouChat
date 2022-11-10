@@ -45,13 +45,11 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
 
-        System.out.println("123");
         String message = msg.text();
         //前端传递消息格式：id-message，id为channelGroup编号
         String[] msgArray = message.split("-");
 
         String id = msgArray[0];//组号，格式为：s(g)id
-        System.out.println("id: "+id);
         String chatId = id.substring(1);//好友表或用户-群聊关联表中的id
         String s = msgArray[1];//具体消息
 
@@ -61,7 +59,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
         Channel channel = ctx.channel();
         String username = channel.attr(AttributeKey.valueOf("username")).get().toString();
         String userId = channel.attr(AttributeKey.valueOf("userId")).get().toString();
-        System.out.println("群组大小为：" + channelGroup.size());
         channelGroup.forEach(ch -> {
             //channel为数据发送方
             //ch为数据接收方
@@ -78,8 +75,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
                     singleChat.setUserFriendsId(Integer.parseInt(chatId));
                     singleChat.setUserId(Integer.parseInt(userId));
                     singleChat.setContent(s);
-                    Integer integer = singleChatService.addMsgUserSend(singleChat);
-                    System.out.println("integer = "+integer);
+                    singleChatService.addMsgUserSend(singleChat);
                 } else if(id.charAt(0) == 'g'){
                     //群聊
                     GroupChat groupChat = new GroupChat();
@@ -105,11 +101,9 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
         String username = channel.attr(AttributeKey.valueOf("username")).get().toString();
         //根据用户id获取他加入的所有群组
         List<Friends> friendsList = friendsService.queryFriendsByUserId(Integer.parseInt(userId));
-        System.out.println(friendsList);
         for (Friends friends : friendsList) {
             String sid = "s" + friends.getId();
             ChannelGroup channelGroup = GroupManageUtil.getChannelGroupById(sid);
-            System.out.println("------"+channelGroup.size());
             channelGroup.writeAndFlush(new TextWebSocketFrame(userId + "-"+username+"-已上线"));
         }
 
@@ -119,7 +113,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
             ChannelGroup channelGroup = GroupManageUtil.getChannelGroupById(gid);
             channelGroup.writeAndFlush(new TextWebSocketFrame(userId + "-"+username+"-已上线"));
         }
-        //channelGroup.writeAndFlush(new TextWebSocketFrame("[用户："+channel.remoteAddress()+"] 已上线"));
     }
 
     @Override
