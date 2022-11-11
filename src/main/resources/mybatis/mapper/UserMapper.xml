@@ -67,4 +67,11 @@
         from youchat.user
         where id = #{id};
     </select>
+
+    <!--Integer queryUserByUserInfo(String username);-->
+    <select id="queryUserByUserInfo" resultType="java.lang.Integer">
+        SELECT id
+        FROM youchat.user
+        WHERE username = #{username}
+    </select>
 </mapper>

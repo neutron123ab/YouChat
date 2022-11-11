@@ -23,4 +23,7 @@ public interface UserMapper {
 
     //根据用户id查找用户信息
     User queryUserById(Integer id);
+
+    //获取用户id
+    Integer queryUserByUserInfo(String username);
 }

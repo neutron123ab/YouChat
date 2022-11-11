@@ -12,10 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Objects;
@@ -80,6 +77,16 @@ public class LoginController {
         redisTemplate.opsForValue().set(key, userInfo, 3, TimeUnit.HOURS);
 
         return Result.success(jwtTokenService.generateTokenByRSA(key, rsaKey));
+    }
+
+    /**
+     * 根据用户名获取用户id
+     * @param username 用户名
+     * @return 用户id
+     */
+    @GetMapping("/getUserInfo")
+    public Result<Integer> getUserInfo(String username){
+        return Result.success(userService.getUserInfo(username));
     }
 
 }

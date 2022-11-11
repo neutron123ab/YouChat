@@ -62,4 +62,9 @@ public class UserServiceImpl implements UserService {
         RSAUtils rsaUtils = RSAUtils.getRsaUtils();
         return rsaUtils.decodePassword(password);
     }
+
+    @Override
+    public Integer getUserInfo(String username){
+        return userMapper.queryUserByUserInfo(username);
+    }
 }
