@@ -63,11 +63,13 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
             //channel为数据发送方
             //ch为数据接收方
             if (ch != channel) {
-                //别人发送消息
+                //给别人发送消息
+                String username1 = ch.attr(AttributeKey.valueOf("username")).get().toString();
+                System.out.println("username1: "+username1);
                 ch.writeAndFlush(new TextWebSocketFrame(userId + "-" + username + "-" + s));
 
             } else {
-                //自己发送消息
+                //给自己发送消息
                 ch.writeAndFlush(new TextWebSocketFrame(userId + "-" + username + "-" + s));
                 //私聊
                 if(id.charAt(0) == 's'){
@@ -86,6 +88,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
             }
         });
         System.out.println("[user: " + username + "] 发送消息：" + s);
+        System.out.println("组号为：" + id);
     }
 
     @Override
@@ -96,23 +99,23 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Channel channel = ctx.channel();
-        String userId = channel.attr(AttributeKey.valueOf("userId")).get().toString();
-        String username = channel.attr(AttributeKey.valueOf("username")).get().toString();
-        //根据用户id获取他加入的所有群组
-        List<Friends> friendsList = friendsService.queryFriendsByUserId(Integer.parseInt(userId));
-        for (Friends friends : friendsList) {
-            String sid = "s" + friends.getId();
-            ChannelGroup channelGroup = GroupManageUtil.getChannelGroupById(sid);
-            channelGroup.writeAndFlush(new TextWebSocketFrame(userId + "-"+username+"-已上线"));
-        }
-
-        List<Group> groupList = groupService.queryAllGroupsUserJoined(Integer.parseInt(userId));
-        for (Group group : groupList) {
-            String gid = "g"+group.getId();
-            ChannelGroup channelGroup = GroupManageUtil.getChannelGroupById(gid);
-            channelGroup.writeAndFlush(new TextWebSocketFrame(userId + "-"+username+"-已上线"));
-        }
+//        Channel channel = ctx.channel();
+//        String userId = channel.attr(AttributeKey.valueOf("userId")).get().toString();
+//        String username = channel.attr(AttributeKey.valueOf("username")).get().toString();
+//        //根据用户id获取他加入的所有群组
+//        List<Friends> friendsList = friendsService.queryFriendsByUserId(Integer.parseInt(userId));
+//        for (Friends friends : friendsList) {
+//            String sid = "s" + friends.getId();
+//            ChannelGroup channelGroup = GroupManageUtil.getChannelGroupById(sid);
+//            channelGroup.writeAndFlush(new TextWebSocketFrame(userId + "-"+username+"-已上线"));
+//        }
+//
+//        List<Group> groupList = groupService.queryAllGroupsUserJoined(Integer.parseInt(userId));
+//        for (Group group : groupList) {
+//            String gid = "g"+group.getId();
+//            ChannelGroup channelGroup = GroupManageUtil.getChannelGroupById(gid);
+//            channelGroup.writeAndFlush(new TextWebSocketFrame(userId + "-"+username+"-已上线"));
+//        }
     }
 
     @Override

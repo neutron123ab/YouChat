@@ -52,8 +52,9 @@
     <!--List<Group> queryAllGroupsUserJoined(Integer userId);-->
     <select id="queryAllGroupsUserJoined" resultType="com.neutron.youchat_backend.entity.Group">
         SELECT g.id, g.user_id AS 'groupOwnerId', g.group_name, g.container, g.num, g.create_time
-        FROM youchat.`group` g
-                 LEFT JOIN youchat.user_group ug
-                           ON ug.user_id = #{userId} AND ug.group_id = g.id
+        FROM youchat.`group` g,
+             youchat.user_group ug
+        WHERE ug.user_id = #{userId}
+          AND ug.group_id = g.id
     </select>
 </mapper>
