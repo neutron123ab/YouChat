@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `group`
 (
     `id`          INT(11)                               NOT NULL AUTO_INCREMENT COMMENT '群组id',
     `user_id`     INT(11)     DEFAULT 1                 NOT NULL COMMENT '群主id',
-    `group_name`  VARCHAR(32) DEFAULT '新建群聊'            NOT NULL COMMENT '群聊名称',
+    `group_name`  VARCHAR(32) DEFAULT '新建群聊'         NOT NULL COMMENT '群聊名称',
     `create_time` TIMESTAMP   DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
     `container`   INT(32)     DEFAULT 1000              NOT NULL COMMENT '群组容量',
     `num`         INT(32)     DEFAULT 0                 NOT NULL COMMENT '成员数量',
